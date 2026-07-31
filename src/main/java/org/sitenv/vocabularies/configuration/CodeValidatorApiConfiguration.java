@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -16,17 +16,16 @@ import org.sitenv.vocabularies.loader.VocabularyLoadRunner;
 import org.sitenv.vocabularies.loader.VocabularyLoaderFactory;
 import org.sitenv.vocabularies.validation.NodeValidatorFactory;
 import org.sitenv.vocabularies.validation.dto.GlobalCodeValidatorResults;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ServiceLocatorFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
-import org.springframework.orm.hibernate5.HibernateExceptionTranslator;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
@@ -67,10 +66,11 @@ public class CodeValidatorApiConfiguration {
 		return txManager;
 	}
 
-	@Bean
-	public HibernateExceptionTranslator hibernateExceptionTranslator() {
-		return new HibernateExceptionTranslator();
-	}
+	// The HibernateExceptionTranslator bean that used to live here was dropped:
+	// it comes from Spring's org.springframework.orm.hibernate5 package (the
+	// Hibernate 5 integration) and we now run Hibernate 6.6. It was also
+	// redundant, because LocalContainerEntityManagerFactoryBean already
+	// implements PersistenceExceptionTranslator for the JPA setup above.
 
 	@Bean
 	public DataSource dataSource() {
@@ -93,6 +93,7 @@ public class CodeValidatorApiConfiguration {
 	}
 
 	@Bean
+	@Primary
 	public VocabularyLoaderFactory vocabularyLoaderFactory() {
 		return (VocabularyLoaderFactory) vocabularyLoaderFactoryServiceLocatorFactoryBean().getObject();
 	}
@@ -105,11 +106,11 @@ public class CodeValidatorApiConfiguration {
 	}
 
 	@Bean
+	@Primary
 	public NodeValidatorFactory vocabularyValidatorFactory() {
 		return (NodeValidatorFactory) vocabularyValidatorFactoryServiceLocatorFactoryBean().getObject();
 	}
 
-	@Autowired
 	@Bean
 	VocabularyLoadRunner vocabularyLoadRunner(final Environment environment,
 			final VocabularyLoaderFactory vocabularyLoaderFactory, final DataSource dataSource) {
@@ -154,7 +155,6 @@ public class CodeValidatorApiConfiguration {
 		return XPathFactory.newInstance();
 	}
 
-	@Autowired
 	@Bean
 	public ValidationConfigurationLoader validationConfigurationLoader(final Environment environment) {
 		ValidationConfigurationLoader validationConfigurationLoader = new ValidationConfigurationLoader();

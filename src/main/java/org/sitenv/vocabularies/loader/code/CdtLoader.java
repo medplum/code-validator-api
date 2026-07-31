@@ -4,6 +4,7 @@ import org.apache.commons.lang3.text.StrBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFCell;
@@ -87,7 +88,7 @@ import java.util.List;
         if (row != null) {
             for (int c = row.getFirstCellNum(); c < row.getLastCellNum(); c++) {
                 Cell cell = row.getCell(c);
-                if (cell != null && cell.getCellType() != Cell.CELL_TYPE_BLANK)
+                if (cell != null && cell.getCellType() != CellType.BLANK)
                     return false;
             }
         }

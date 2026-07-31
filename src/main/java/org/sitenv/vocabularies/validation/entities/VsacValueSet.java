@@ -1,9 +1,9 @@
 package org.sitenv.vocabularies.validation.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 /**
  * Created by Brian on 2/5/2016.

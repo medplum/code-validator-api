@@ -10,38 +10,59 @@
 	<url>http://www.sitenv.org</url>
 
 	<properties>
-		<java.version>1.8</java.version>
-		<logback.version>1.2.11</logback.version>
-		<org.springframework.version>5.3.39</org.springframework.version>
+		<java.version>17</java.version>
+		<logback.version>1.6.1</logback.version>
+		<org.springframework.version>6.2.19</org.springframework.version>
 	</properties>
 
 	<dependencies>
+		<!-- Jakarta EE APIs. servlet-api is 'provided': the container supplies
+		     it, and shipping a copy inside WEB-INF/lib breaks Tomcat. -->
 		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>3.1.0</version>
+			<groupId>jakarta.servlet</groupId>
+			<artifactId>jakarta.servlet-api</artifactId>
+			<version>6.0.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<!-- @Resource and the JAXB API both left the JDK after Java 8 (JEP 320),
+		     so they now have to be declared explicitly. -->
+		<dependency>
+			<groupId>jakarta.annotation</groupId>
+			<artifactId>jakarta.annotation-api</artifactId>
+			<version>3.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>jakarta.xml.bind</groupId>
+			<artifactId>jakarta.xml.bind-api</artifactId>
+			<version>4.0.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jaxb</groupId>
+			<artifactId>jaxb-runtime</artifactId>
+			<version>4.0.9</version>
+			<scope>runtime</scope>
 		</dependency>
 
-		<!-- spring -->
+		<!-- spring. spring-web/spring-webmvc are not used by this module. -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
 			<version>${org.springframework.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+			<version>${org.springframework.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<version>${org.springframework.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-jpa</artifactId>
-			<version>2.7.18</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-webmvc</artifactId>
-			<version>${org.springframework.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-web</artifactId>
-			<version>${org.springframework.version}</version>
+			<version>3.5.13</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -52,32 +73,28 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
 			<version>${org.springframework.version}</version>
+			<scope>test</scope>
 		</dependency>
 		<!--spring -->
 
-		<!-- database -->
+		<!-- database. jakarta.persistence-api arrives transitively with
+		     Hibernate, so it is deliberately not pinned here. -->
 		<dependency>
 			<groupId>org.hsqldb</groupId>
 			<artifactId>hsqldb</artifactId>
-			<version>2.5.2</version>
+			<version>2.7.4</version>
 		</dependency>
 
 		<dependency>
 		    <groupId>org.hibernate.orm</groupId>
 		    <artifactId>hibernate-core</artifactId>
-		    <version>6.0.0.Alpha9</version>
+		    <version>6.6.54.Final</version>
 		</dependency>
-				
-		<dependency>
-		    <groupId>javax.persistence</groupId>
-		    <artifactId>javax.persistence-api</artifactId>
-		    <version>2.2</version>
-		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-dbcp2</artifactId>
-			<version>2.1.1</version>
+			<version>2.14.0</version>
 		</dependency>
 		<!-- database -->
 
@@ -85,27 +102,31 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>3.4</version>
+			<version>3.20.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi</artifactId>
-			<version>3.17</version>
+			<version>5.5.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi-ooxml</artifactId>
-			<version>3.17</version>
+			<version>5.5.1</version>
 		</dependency>
+		<!-- Replaces com.monitorjbl:xlsx-streamer, whose last release (2.2.0,
+		     2021) is built against POI 4.1.2 and blows up with
+		     NoClassDefFoundError on a different POI. This is the maintained
+		     fork of the same library and it targets POI 5.5.1 exactly. -->
 		<dependency>
-			<groupId>com.monitorjbl</groupId>
-			<artifactId>xlsx-streamer</artifactId>
-			<version>1.0.1</version>
+			<groupId>com.github.pjfanning</groupId>
+			<artifactId>excel-streaming-reader</artifactId>
+			<version>5.2.0</version>
 		</dependency>
 		<dependency>
 			<groupId>xerces</groupId>
 			<artifactId>xercesImpl</artifactId>
-			<version>2.12.1</version>
+			<version>2.12.2</version>
 		</dependency>
          <dependency>
             <groupId>ch.qos.logback</groupId>
@@ -128,10 +149,13 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.1</version>
+				<version>3.15.0</version>
 				<configuration>
-					<source>${java.version}</source>
-					<target>${java.version}</target>
+					<release>${java.version}</release>
+					<!-- Spring 6 dropped parameter-name discovery from debug
+					     info, so @RequestParam/@Bean parameters without an
+					     explicit name need -parameters to resolve. -->
+					<parameters>true</parameters>
 				</configuration>
 			</plugin>
 			<plugin>

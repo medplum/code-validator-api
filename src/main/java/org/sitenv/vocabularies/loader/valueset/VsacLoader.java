@@ -1,6 +1,6 @@
 package org.sitenv.vocabularies.loader.valueset;
 
-import com.monitorjbl.xlsx.StreamingReader;
+import com.github.pjfanning.xlsx.StreamingReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.poi.ss.usermodel.Row;

@@ -1,6 +1,6 @@
 package org.sitenv.vocabularies.configuration;
 
-import javax.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.*;
 import java.util.List;
 
 /**

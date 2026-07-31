@@ -9,8 +9,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
-import javax.servlet.ServletContext;
+import jakarta.annotation.Resource;
+import jakarta.servlet.ServletContext;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
