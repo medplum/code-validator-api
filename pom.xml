@@ -5,7 +5,13 @@
 
 	<groupId>org.sitenv.vocabulary</groupId>
 	<artifactId>codevalidator-api</artifactId>
-	<version>latestVersion</version>
+	<!-- Upstream declares the literal string "latestVersion" here. Nothing publishes
+	     this artifact, so every build overwrites the same path in ~/.m2, which makes
+	     an upstream-built jar and this fork's jar indistinguishable there, silently,
+	     because a fixed version string is never re-resolved or flagged as stale. The
+	     medplum qualifier makes the coordinates state which source they came from.
+	     Bump the trailing N when this fork's behaviour changes; consumers must match. -->
+	<version>latestVersion-medplum.1</version>
 	<name>Code Validator API</name>
 	<url>http://www.sitenv.org</url>
 
